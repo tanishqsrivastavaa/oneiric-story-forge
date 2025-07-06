@@ -2,41 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Dream Journaling App - Mystical Design System
+All colors MUST be HSL for proper theming
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Dreamy background gradients */
+    --background: 249 30% 7%;
+    --foreground: 276 100% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Glass-like cards */
+    --card: 252 25% 12%;
+    --card-foreground: 276 100% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Popover styling */
+    --popover: 252 25% 12%;
+    --popover-foreground: 276 100% 95%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Magical primary colors */
+    --primary: 276 100% 70%;
+    --primary-foreground: 249 30% 7%;
+    --primary-glow: 276 100% 85%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Soft secondary */
+    --secondary: 252 25% 15%;
+    --secondary-foreground: 276 100% 85%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted elements */
+    --muted: 252 20% 20%;
+    --muted-foreground: 276 30% 70%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent colors */
+    --accent: 195 100% 70%;
+    --accent-foreground: 249 30% 7%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Error states */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 252 25% 25%;
+    --input: 252 25% 18%;
+    --ring: 276 100% 70%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Magical gradients */
+    --gradient-magical: linear-gradient(135deg, hsl(276 100% 70%), hsl(195 100% 70%));
+    --gradient-dream: linear-gradient(180deg, hsl(249 30% 7%), hsl(252 25% 12%));
+    --gradient-card: linear-gradient(145deg, hsl(252 25% 12% / 0.8), hsl(276 50% 15% / 0.6));
+    
+    /* Shadows and effects */
+    --shadow-magical: 0 8px 32px hsl(276 100% 70% / 0.3);
+    --shadow-dream: 0 4px 16px hsl(249 30% 7% / 0.5);
+    --shadow-glow: 0 0 24px hsl(276 100% 70% / 0.4);
+    
+    /* Animation timing */
+    --transition-magical: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.3s ease-out;
 
     --sidebar-background: 0 0% 98%;
 
