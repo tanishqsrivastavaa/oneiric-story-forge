@@ -29,14 +29,14 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/dream', {
+      const response = await fetch('/dream-response/user?user_id=user_id', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
           content: dreamText,
-          user_id: 'user_123' // In real app, this would come from auth
+          user_id: 'user001' // In real app, this would come from auth
         }),
       });
 
