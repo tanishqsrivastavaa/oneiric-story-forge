@@ -1,0 +1,50 @@
+# Node.js
+node_modules/
+dist/
+build/
+
+# Vite
+.vite/
+
+# Next.js
+.next/
+out/
+
+# dotenv env vars
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+venv/
+env/
+*.db
+*.sqlite3
+
+# VSCode / JetBrains IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Supabase
+.supabase/
+supabase/.temp/
+
+# Jupyter (if any)
+.ipynb_checkpo

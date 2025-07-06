@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import supabase
 from pydantic_ai.agent import Agent
@@ -17,6 +18,18 @@ load_dotenv()
 
 
 app = FastAPI() #uvicorn main:app --reload  
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[            # front‑end URLs that may call the API
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://your‑prod‑domain.com",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 db_key = os.getenv("SUPABASE_KEY")
 sp_url = os.getenv("SUPABASE_URL")
