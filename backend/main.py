@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -97,7 +97,11 @@ async def generate_collective_response(user_id : str = Query(...)):
     # dream = dream_store.get(dream_id)
     # if not dream:
     #     return {"error": "Dream not found"}
-    response = supabase_client.table("dreams").select("*").eq("user_id",user_id).execute()
+    try:
+        response = supabase_client.table("dreams").select("*").eq("user_id",user_id).execute()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching dreams: {str(e)}")
+    
     dreams = response.data
 
     if not dreams:
@@ -193,9 +197,3 @@ async def generate_collective_image(user_id : str = Query(...)):
     # return FileResponse(file_path,media_type="image/png")
 
 
-
-# '''TODO
-# 1. Should append the image url into supabase DONE
-# 2. Re-format the code for better code quality
-# 3. Make the front-end (use deepseek)'''
-#lol
