@@ -29,27 +29,42 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/dream-response/user?user_id=user_id', {
+      // First, save the dream
+      const saveResponse = await fetch('http://localhost:8000/dream', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          content: dreamText,
-          user_id: 'user001' // In real app, this would come from auth
+          user_id: 'user001',
+          text: dreamText
         }),
       });
 
-      if (response.ok) {
-        toast({
-          title: "Dream Captured ✨",
-          description: "Your dream has been safely stored in the dream realm.",
-        });
-        setDreamText("");
-        onDreamSubmitted();
-      } else {
-        throw new Error('Failed to submit dream');
+      if (!saveResponse.ok) {
+        throw new Error('Failed to save dream');
       }
+
+      // Then, get the AI-generated response
+      const narrativeResponse = await fetch('http://localhost:8000/dream-response/user?user_id=user001');
+      
+      if (!narrativeResponse.ok) {
+        throw new Error('Failed to generate dream narrative');
+      }
+
+      const narrativeData = await narrativeResponse.json();
+
+      toast({
+        title: "Dream Captured ✨",
+        description: "Your dream has been safely stored in the dream realm.",
+      });
+      
+      setDreamText("");
+      onDreamSubmitted();
+      
+      // Return the AI response for future use
+      return narrativeData;
+      
     } catch (error) {
       toast({
         title: "Submission Failed",
