@@ -29,8 +29,12 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
     setIsSubmitting(true);
     
     try {
+<<<<<<< HEAD
       // First, save the dream
       const saveResponse = await fetch('http://localhost:8000/dream', {
+=======
+      const response = await fetch('http://localhost:8000/dream', {
+>>>>>>> e7d82b3 (made api calling changes)
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
