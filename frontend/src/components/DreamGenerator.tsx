@@ -14,10 +14,10 @@ export function DreamGenerator() {
   const generateCollectiveDream = async () => {
     setIsGeneratingNarrative(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/dream-response/user?user_id=user001');
+      const response = await fetch('http://127.0.0.1:8000/dream-response/user?user_id=Tanishq%20Srivastava');
       if (response.ok) {
-        const data = await response.text();
-        setCollectiveDream(data);
+        const data = await response.json();
+        setCollectiveDream(data.response);
         toast({
           title: "Collective Dream Generated ✨",
           description: "The dream realm has spoken through your experiences.",

@@ -6,7 +6,7 @@ import { Moon, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface DreamFormProps {
-  onDreamSubmitted: () => void;
+  onDreamSubmitted: (narrative: string) => void;
 }
 
 export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
@@ -60,7 +60,7 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
       });
       
       setDreamText("");
-      onDreamSubmitted();
+      onDreamSubmitted(narrativeData.response);
       
       // Return the AI response for future use
       return narrativeData;

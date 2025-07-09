@@ -22,9 +22,7 @@ app = FastAPI() #uvicorn main:app --reload
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[            # front‑end URLs that may call the API
-        "http://localhost:5173",
-        "http://localhost:3000",
-        "https://your‑prod‑domain.com",
+        "http://localhost:8080"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -120,7 +118,7 @@ async def generate_collective_response(user_id : str = Query(...)):
 
     ai_response = await base_agent.run(prompt)
     # supabase_client.table("dreams").select("response").
-    return {"response": ai_response}
+    return {"response": ai_response.output}
 
 # '''Testing agent's response'''
 # async def test_agent():

@@ -22,18 +22,18 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
   const fetchDreams = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/dreams/user?user_id=user_123');
+      const response = await fetch('http://127.0.0.1:8000/dream-response/user?user_id=user001');
       if (response.ok) {
         const data = await response.json();
-        setDreams(data);
+        setDreams(data.dreamText);
       } else {
         throw new Error('Failed to fetch dreams');
       }
     } catch (error) {
       toast({
         title: "Failed to Load Dreams",
-        description: "Unable to retrieve your dream history.",
-        variant: "destructive",
+          description: "Unable to retrieve your dream history.",
+          variant: "destructive",
       });
     } finally {
       setIsLoading(false);
