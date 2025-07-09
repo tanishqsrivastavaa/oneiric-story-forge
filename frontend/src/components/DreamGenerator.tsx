@@ -14,7 +14,7 @@ export function DreamGenerator() {
   const generateCollectiveDream = async () => {
     setIsGeneratingNarrative(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/dream-response/user?user_id=Tanishq%20Srivastava');
+      const response = await fetch('http://127.0.0.1:8000/dream-response/user?user_id=TanishqSrivastava');
       if (response.ok) {
         const data = await response.json();
         setCollectiveDream(data.response);
@@ -37,13 +37,13 @@ export function DreamGenerator() {
   };
 
   const generateDreamImage = async () => {
+    console.log("'Generate Dream Image' button clicked");
     setIsGeneratingImage(true);
     try {
       const response = await fetch('/dream-generate/user?user_id=user_123');
       if (response.ok) {
-        const imageBlob = await response.blob();
-        const imageUrl = URL.createObjectURL(imageBlob);
-        setDreamImage(imageUrl);
+        const data = await response.json();
+        setDreamImage(data.image_url);
         toast({
           title: "Dream Image Created 🎨",
           description: "Your dreams have taken visual form.",

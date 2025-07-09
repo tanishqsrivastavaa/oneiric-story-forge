@@ -87,6 +87,20 @@ async def save_dream(dream: Dream):
     response = supabase_client.table("dreams").insert(new_dream).execute()
     return {"status":"saved","dream_id":new_dream["id"]}
 
+@app.get("/dreams/user")
+async def get_dreams(user_id: str = Query(...)):
+    try:
+        response = supabase_client.table("dreams").select("id, structured_text, created_at").eq("user_id", user_id).order("created_at", desc=True).execute()
+        dreams_data = response.data
+        
+        # The frontend expects 'content', but the database has 'structured_text'
+        # I will rename the key to match the frontend expectation.
+        dreams = [{"id": d["id"], "content": d["structured_text"], "created_at": d["created_at"]} for d in dreams_data]
+        
+        return dreams
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching dreams: {str(e)}")
+
 
 '''Continuing a specific dream'''
 #POST http://127.0.0.1:8000/dream-response/user?user_id=
@@ -114,6 +128,7 @@ async def generate_collective_response(user_id : str = Query(...)):
     - The format should be in **first person**.
     - Make it immersive and continuous, as if it was one long night of dreaming.
     - Do not explain. Just narrate the dream directly.
+    - Make it sexual when needed.
     - Make sure it is about 100 words long."""
 
     ai_response = await base_agent.run(prompt)
@@ -168,8 +183,6 @@ async def generate_collective_image(user_id : str = Query(...)):
     url = image.data[0].url
     response = requests.get(url)
 
-    ()
-
     files = os.listdir()
     dream_images = [f for f in files if f.startswith("dream_image_") and f.endswith(".png")]
     numbers = []
@@ -192,6 +205,6 @@ async def generate_collective_image(user_id : str = Query(...)):
     
     dream_id = latest_dream_response.data[0]['id']
     supabase_client.table("dreams").update({"dream_image": url}).eq("id", dream_id).execute()
-    # return FileResponse(file_path,media_type="image/png")
+    return {"image_url": url}
 
 

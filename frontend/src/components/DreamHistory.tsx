@@ -22,10 +22,10 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
   const fetchDreams = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/dream-response/user?user_id=user001');
+      const response = await fetch('/dreams/user?user_id=Tanishq%20Srivastava');
       if (response.ok) {
         const data = await response.json();
-        setDreams(data.dreamText);
+        setDreams(data);
       } else {
         throw new Error('Failed to fetch dreams');
       }
@@ -93,7 +93,7 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
                       {formatDate(dream.created_at)}
                     </div>
                   </div>
-                  <p className="text-sm text-foreground/90 leading-relaxed">
+                  <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
                     {dream.content}
                   </p>
                 </div>

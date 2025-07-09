@@ -25,6 +25,7 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
       const response = await fetch('/dreams/user?user_id=user_123');
       if (response.ok) {
         const data = await response.json();
+        console.log("Fetched data:", JSON.stringify(data, null, 2));
         setDreams(data);
       } else {
         throw new Error('Failed to fetch dreams');
