@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Moon, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 interface DreamFormProps {
   onDreamSubmitted: (narrative: string) => void;
@@ -13,10 +14,11 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
   const [dreamText, setDreamText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { token } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!dreamText.trim()) {
       toast({
         title: "Dream Required",
@@ -27,16 +29,16 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
     }
 
     setIsSubmitting(true);
-    
+
     try {
-      // First, save the dream
+      // First, save the dream with JWT token
       const saveResponse = await fetch('http://127.0.0.1:8000/dream', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ 
-          user_id: 'user001',
+        body: JSON.stringify({
           text: dreamText
         }),
       });
@@ -46,8 +48,12 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
       }
 
       // Then, get the AI-generated response
-      const narrativeResponse = await fetch('http://localhost:8000/dream-response/user?user_id=user001');
-      
+      const narrativeResponse = await fetch('http://localhost:8000/dream-response/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
       if (!narrativeResponse.ok) {
         throw new Error('Failed to generate dream narrative');
       }
@@ -58,13 +64,13 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
         title: "Dream Captured ✨",
         description: "Your dream has been safely stored in the dream realm.",
       });
-      
+
       setDreamText("");
       onDreamSubmitted(narrativeData.response);
-      
+
       // Return the AI response for future use
       return narrativeData;
-      
+
     } catch (error) {
       toast({
         title: "Submission Failed",
@@ -103,9 +109,9 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
               {dreamText.length} characters
             </div>
           </div>
-          
-          <Button 
-            type="submit" 
+
+          <Button
+            type="submit"
             variant="magical"
             className="w-full"
             disabled={isSubmitting || !dreamText.trim()}

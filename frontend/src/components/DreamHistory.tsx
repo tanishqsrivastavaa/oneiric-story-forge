@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Clock, Moon, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 interface Dream {
   id: string;
@@ -18,11 +19,16 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
   const [dreams, setDreams] = useState<Dream[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { token } = useAuth();
 
   const fetchDreams = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/dreams/user?user_id=Tanishq%20Srivastava');
+      const response = await fetch('http://127.0.0.1:8000/dreams/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setDreams(data);
@@ -32,8 +38,8 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
     } catch (error) {
       toast({
         title: "Failed to Load Dreams",
-          description: "Unable to retrieve your dream history.",
-          variant: "destructive",
+        description: "Unable to retrieve your dream history.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);

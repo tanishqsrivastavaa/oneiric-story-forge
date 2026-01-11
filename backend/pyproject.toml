@@ -5,14 +5,20 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "bcrypt>=4.1.1",
     "cerebras-cloud-sdk>=1.28.0",
     "faiss-cpu>=1.10.0",
     "fastapi>=0.115.12",
+    "passlib>=1.7.4",
     "pydantic>=2.11.2",
     "pydantic-ai>=0.4.0",
+    "python-jose[cryptography]>=3.3.0",
+    "pyjwt>=2.10.1",
     "sentence-transformers>=4.0.2",
+    "sqlalchemy>=2.0.0",
     "supabase>=2.15.0",
     "together>=1.5.17",
     "torch>=2.6.0",
     "vecs>=0.4.5",
+    "jose>=1.0.0",
 ]

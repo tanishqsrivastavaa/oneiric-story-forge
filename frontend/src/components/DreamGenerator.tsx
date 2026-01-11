@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, Image, Loader2, Sparkles, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 export function DreamGenerator() {
   const [collectiveDream, setCollectiveDream] = useState("");
@@ -10,11 +11,16 @@ export function DreamGenerator() {
   const [isGeneratingNarrative, setIsGeneratingNarrative] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const { toast } = useToast();
+  const { token } = useAuth();
 
   const generateCollectiveDream = async () => {
     setIsGeneratingNarrative(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/dream-response/user?user_id=TanishqSrivastava');
+      const response = await fetch('http://127.0.0.1:8000/dream-response/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setCollectiveDream(data.response);
@@ -40,7 +46,11 @@ export function DreamGenerator() {
     console.log("'Generate Dream Image' button clicked");
     setIsGeneratingImage(true);
     try {
-      const response = await fetch('/dream-generate/user?user_id=user_123');
+      const response = await fetch('http://127.0.0.1:8000/dream-generate/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setDreamImage(data.image_url);
@@ -76,7 +86,7 @@ export function DreamGenerator() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button 
+          <Button
             onClick={generateCollectiveDream}
             disabled={isGeneratingNarrative}
             variant="mystical"
@@ -94,7 +104,7 @@ export function DreamGenerator() {
               </div>
             )}
           </Button>
-          
+
           {collectiveDream && (
             <div className="p-4 rounded-lg bg-secondary/30 border border-border/30">
               <h4 className="font-semibold text-primary mb-2 flex items-center gap-2">
@@ -121,7 +131,7 @@ export function DreamGenerator() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button 
+          <Button
             onClick={generateDreamImage}
             disabled={isGeneratingImage}
             variant="ethereal"
@@ -139,11 +149,11 @@ export function DreamGenerator() {
               </div>
             )}
           </Button>
-          
+
           {dreamImage && (
             <div className="rounded-lg overflow-hidden shadow-glow">
-              <img 
-                src={dreamImage} 
+              <img
+                src={dreamImage}
                 alt="Generated dream visualization"
                 className="w-full h-64 object-cover"
               />

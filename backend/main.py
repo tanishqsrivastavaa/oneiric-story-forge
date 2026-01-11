@@ -1,76 +1,147 @@
-from fastapi import FastAPI, Query, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-import supabase
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker, Session
 from pydantic_ai.agent import Agent
 from pydantic_ai.models.groq import GroqModel
 from pydantic_ai.providers.groq import GroqProvider
-# from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import os
-import asyncio
+
 from uuid import uuid4
-from together import Together
 import requests
+from datetime import datetime
+from auth import (
+    authenticate_user, 
+    create_user, 
+    create_access_token, 
+    verify_token, 
+    SessionLocal as AuthSessionLocal,
+    Base as AuthBase,
+    engine as auth_engine
+)
+
 load_dotenv()
 
-
-
-app = FastAPI() #uvicorn main:app --reload  
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[            # front‑end URLs that may call the API
-        "http://localhost:8080"
+    allow_origins=[
+        "http://localhost:8080",
+        "http://localhost:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-db_key = os.getenv("SUPABASE_KEY")
-sp_url = os.getenv("SUPABASE_URL")
 TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-# HF_API_KEY = os.getenv("HF_API_KEY")
-supabase_client = supabase.create_client(sp_url,db_key)
+NEON_DB_URL = os.getenv("NEON_DB_URL")
+PIXAZO_API_KEY = os.getenv("PIXAZO_API_KEY")
 
+# Initialize database connection
+engine = create_engine(NEON_DB_URL)
+SessionLocal = sessionmaker(bind=engine)
+
+# Create auth tables on startup
+@app.on_event("startup")
+async def startup_event():
+    """Create all tables on startup."""
+    AuthBase.metadata.create_all(bind=auth_engine)
+
+security = HTTPBearer()
+
+'''-------REQUEST/RESPONSE MODELS---------'''
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    email: str
+
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> str:
+    """Extract and verify the email from JWT token."""
+    token = credentials.credentials
+    email = verify_token(token)
+    if email is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return email
+
+'''-------AUTH ENDPOINTS---------'''
+@app.post("/signup", response_model=AuthResponse)
+async def signup(request: SignupRequest):
+    """Create a new user account."""
+    session = AuthSessionLocal()
+    try:
+        
+        user = create_user(request.email, request.password, session)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+        
+        
+        access_token = create_access_token(user.email)
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "email": user.email
+        }
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Signup failed: {str(e)}"
+        )
+    finally:
+        session.close()
+
+@app.post("/login", response_model=AuthResponse)
+async def login(request: LoginRequest):
+    """Authenticate user and return JWT token."""
+    session = AuthSessionLocal()
+    try:
+        user = authenticate_user(request.email, request.password, session)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid email or password"
+            )
+        
+        access_token = create_access_token(user.email)
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "email": user.email
+        }
+    finally# d[2] is the text column:
+        session.close()
 
 '''-------AGENTS---------'''
-
-#GroqAPI
-model1 = GroqModel(model_name = "llama-3.3-70b-versatile",provider = GroqProvider(api_key = GROQ_API_KEY))
+model1 = GroqModel(model_name="llama-3.3-70b-versatile", provider=GroqProvider(api_key=GROQ_API_KEY))
 base_agent = Agent(model=model1)
 
-
-#Image gen agent
-image_client = Together()
-
-
-# Data Model
 class Dream(BaseModel):
-    user_id: str
     text: str
 
-
-# '''locally storing data here for prototyping purpose'''
-# dream_store = {} 
-# dream_counter = 0
-
-
-# Store a dream in Supabase
-#GET http://127.0.0.1:8000/dream
 @app.post("/dream")
-async def save_dream(dream: Dream):
-    # global dream_counter
-    # dream_store[dream_counter] = {
-    #     "user_id" : dream.user_id,
-    #     "text" : dream.text
-    # }
-    # response_id = dream_counter
-    # dream_counter += 1
-    # return {"status":"saved","dream_id" : response_id}
+async def save_dream(dream: Dream, current_user: str = Depends(get_current_user)):
     prompt = f"""You are supposed to format the following text into a structured, vivid dream narrative in first person:
             {dream.text}
             Make it immersive, flow like a dream, and avoid any analysis or explanations. Just narrate as if you're recounting the dream."""
@@ -78,133 +149,155 @@ async def save_dream(dream: Dream):
     structured_result = await base_agent.run(prompt)
     structured_text = structured_result.output
     new_dream = {
-        "id":str(uuid4()),
-        "user_id":dream.user_id,
-        "text":dream.text,
-        "structured_text":structured_text
+        "id": str(uuid4()),
+        "user_id": current_user,
+        "text": dream.text,
+        "structured_text": structured_text,
+        "created_at": datetime.now()
     }
     
-    response = supabase_client.table("dreams").insert(new_dream).execute()
-    return {"status":"saved","dream_id":new_dream["id"]}
+    session = SessionLocal()
+    try:
+        session.execute(
+            text("""INSERT INTO dreams (id, user_id, text, structured_text, created_at) 
+                    VALUES (:id, :user_id, :text, :structured_text, :created_at)"""),
+            new_dream
+        )
+        session.commit()
+    finally:
+        session.close()
+    
+    return {"status": "saved", "dream_id": new_dream["id"]}
 
 @app.get("/dreams/user")
-async def get_dreams(user_id: str = Query(...)):
+async def get_dreams(current_user: str = Depends(get_current_user)):
+    session = SessionLocal()
     try:
-        response = supabase_client.table("dreams").select("id, structured_text, created_at").eq("user_id", user_id).order("created_at", desc=True).execute()
-        dreams_data = response.data
-        
-        # The frontend expects 'content', but the database has 'structured_text'
-        # I will rename the key to match the frontend expectation.
-        dreams = [{"id": d["id"], "content": d["structured_text"], "created_at": d["created_at"]} for d in dreams_data]
-        
+        result = session.execute(
+            text("""SELECT id, structured_text, created_at FROM dreams 
+                    WHERE user_id = :user_id 
+                    ORDER BY created_at DESC"""),
+            {"user_id": current_user}
+        )
+        dreams_data = result.fetchall()
+        dreams = [{"id": d[0], "content": d[1], "created_at": d[2]} for d in dreams_data]
         return dreams
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching dreams: {str(e)}")
+    finally:
+        session.close()
 
-
-'''Continuing a specific dream'''
-#POST http://127.0.0.1:8000/dream-response/user?user_id=
 @app.get("/dream-response/user")
-async def generate_collective_response(user_id : str = Query(...)):
-    # dream = dream_store.get(dream_id)
-    # if not dream:
-    #     return {"error": "Dream not found"}
+async def generate_collective_response(current_user: str = Depends(get_current_user)):
+    session = SessionLocal()
     try:
-        response = supabase_client.table("dreams").select("*").eq("user_id",user_id).execute()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error fetching dreams: {str(e)}")
-    
-    dreams = response.data
-
-    if not dreams:
-        return {"error":"No dreams for this user."}
-    
-    all_dreams_text = "\n\n".join(d["text"] for d in dreams)
-    
-    prompt = f"""
+        result = session.execute(
+            text("SELECT * FROM dreams WHERE user_id = :user_id"),
+            {"user_id": current_user}
+        )
+        dreams_data = result.fetchall()
+        
+        if not dreams_data:
+            return {"error": "No dreams for this user."}
+        
+        all_dreams_text = "\n\n".join(d[2] for d in dreams_data)  
+        
+        prompt = f"""
     You are an AI dream weaver. These are a collection of dreams experienced by one person: 
     {all_dreams_text}
     Now, evolve these dreams into one surreal, cohesive, vivid dream experience.
     - The format should be in **first person**.
     - Make it immersive and continuous, as if it was one long night of dreaming.
     - Do not explain. Just narrate the dream directly.
-    - Make it sexual when needed.
     - Make sure it is about 100 words long."""
 
-    ai_response = await base_agent.run(prompt)
-    # supabase_client.table("dreams").select("response").
-    return {"response": ai_response.output}
+        ai_response = await base_agent.run(prompt)
+        return {"response": ai_response.output}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        session.close()
 
-# '''Testing agent's response'''
-# async def test_agent():
-#     response = await base_agent.run("Describe a surreal dream about a floating city.")
-#     print(response)
-
-
-# if __name__ == "__main__":
-    # import asyncio
-    # asyncio.run(test_agent())
-
-#Second agent which turns the collective dreams into an image.
 @app.get("/dream-generate/user")
-async def generate_collective_image(user_id : str = Query(...)):
-    response = supabase_client.table("dreams").select('*').eq("user_id",user_id).execute()
-    dreams = response.data
+async def generate_collective_image(current_user: str = Depends(get_current_user)):
+    session = SessionLocal()
+    try:
+        result = session.execute(
+            text("SELECT * FROM dreams WHERE user_id = :user_id"),
+            {"user_id": current_user}
+        )
+        dreams_data = result.fetchall()
+        
+        if not dreams_data:
+            return {"error": "No dreams found for this user."}
 
-    if not dreams:
-        return {"error":"No dreams found for this user."}
-
-    combined_dreams = "\n\n".join(d['text'] for d in dreams)
-    
-    prompt = f"""
+        combined_dreams = "\n\n".join(d[2] for d in dreams_data)  
+        
+        prompt = f"""
     You are a surreal storyteller. Here's a set of dreams:
     {combined_dreams}
     Turn it into a visual, animative description in 1-2 sentences for an artist to paint.
     Be abstract and expressive.
     """
 
-    summarized = await base_agent.run(prompt)
-    dream_description = summarized.output.strip()
+        summarized = await base_agent.run(prompt)
+        dream_description = summarized.output.strip()
 
-    # image = model2.text_to_image(dream_description)
-    # file_path = f"{uuid4().hex}.png"
-    # image.save(file_path)
-    # return FileResponse(file_path,media_type="image/png")
-    image = image_client.images.generate(
-        prompt=dream_description,
-        model="black-forest-labs/FLUX.1-schnell-Free",
-        steps=2,
-        n=1,
-        height=1024,
-        width=1024,
-        format="jpeg"
-)
+        
+        pixazo_url = "https://gateway.pixazo.ai/flux-1-schnell/v1/getData"
+        headers = {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+            "Ocp-Apim-Subscription-Key": PIXAZO_API_KEY
+        }
+        data = {
+            "prompt": dream_description,
+            "num_steps": 4,
+            "seed": 15,
+            "height": 512,
+            "width": 512
+        }
 
-    url = image.data[0].url
-    response = requests.get(url)
+        response = requests.post(pixazo_url, json=data, headers=headers)
+        
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Pixazo API error: {response.text}"
+            )
+        
+        response_data = response.json()
+        
+        
+        if "output" in response_data and response_data["output"]:
+            url = response_data["output"]
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid Pixazo API response"
+            )
 
-    files = os.listdir()
-    dream_images = [f for f in files if f.startswith("dream_image_") and f.endswith(".png")]
-    numbers = []
-    for name in dream_images:
-        try:
-            num = int(name.split("_")[-1].split(".")[0])
-            numbers.append(num)
-        except ValueError:
-            continue
-
-    # next_num = max(numbers) + 1 if numbers else 1
-    # file_path = f"dream_images_{next_num}.png"
-
-    # with open(file_path, "wb") as f:
-    #     f.write(response.content)
-
-    latest_dream_response = supabase_client.table("dreams").select("id").eq("user_id", user_id).order("created_at", desc=True).limit(1).execute()
-    if not latest_dream_response.data:
-        return {"error": "No dreams found to update with image."}
-    
-    dream_id = latest_dream_response.data[0]['id']
-    supabase_client.table("dreams").update({"dream_image": url}).eq("id", dream_id).execute()
-    return {"image_url": url}
+        
+        result = session.execute(
+            text("""SELECT id FROM dreams WHERE user_id = :user_id 
+                    ORDER BY created_at DESC LIMIT 1"""),
+            {"user_id": current_user}
+        )
+        latest_dream = result.fetchone()
+        
+        if not latest_dream:
+            return {"error": "No dreams found to update with image."}
+        
+        dream_id = latest_dream[0]
+        session.execute(
+            text("UPDATE dreams SET dream_image = :image_url WHERE id = :id"),
+            {"image_url": url, "id": dream_id}
+        )
+        session.commit()
+        return {"image_url": url}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        session.close()
 
 
