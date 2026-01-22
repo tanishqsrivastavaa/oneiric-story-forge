@@ -16,7 +16,7 @@ export function DreamGenerator() {
   const generateCollectiveDream = async () => {
     setIsGeneratingNarrative(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/dream-response/user', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/dream-response/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }
@@ -46,7 +46,7 @@ export function DreamGenerator() {
     console.log("'Generate Dream Image' button clicked");
     setIsGeneratingImage(true);
     try {
-      const response = await fetch('http://127.0.0.1:8000/dream-generate/user', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/dream-generate/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }

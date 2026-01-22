@@ -32,7 +32,7 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
 
     try {
       // First, save the dream with JWT token
-      const saveResponse = await fetch('http://127.0.0.1:8000/dream', {
+      const saveResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/dream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
       }
 
       // Then, get the AI-generated response
-      const narrativeResponse = await fetch('http://localhost:8000/dream-response/user', {
+      const narrativeResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/dream-response/user`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }
