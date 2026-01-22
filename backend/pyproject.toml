@@ -14,11 +14,7 @@ dependencies = [
     "pydantic-ai>=0.4.0",
     "python-jose[cryptography]>=3.3.0",
     "pyjwt>=2.10.1",
-    "sentence-transformers>=4.0.2",
     "sqlalchemy>=2.0.0",
-    "supabase>=2.15.0",
-    "together>=1.5.17",
-    "torch>=2.6.0",
     "vecs>=0.4.5",
     "jose>=1.0.0",
 ]

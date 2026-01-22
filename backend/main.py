@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, status
+from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
@@ -25,14 +26,29 @@ from auth import (
 
 load_dotenv()
 
+def get_cors_origins() -> List[str]:
+    """Get CORS origins from environment variable or defaults."""
+    env_origins = os.getenv("ALLOWED_ORIGINS", "")
+    
+    default_origins = [
+        "http://localhost:8080",
+        "http://localhost:5173",
+    ]
+    
+    if env_origins:
+        # Split by comma and strip whitespace
+        env_list = [origin.strip() for origin in env_origins.split(",")]
+        return default_origins + env_list
+    
+    return default_origins
+
+
+
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",
-        "http://localhost:5173"
-    ],
+    allow_origins=get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -130,7 +146,7 @@ async def login(request: LoginRequest):
             "token_type": "bearer",
             "email": user.email
         }
-    finally# d[2] is the text column:
+    finally:
         session.close()
 
 '''-------AGENTS---------'''
