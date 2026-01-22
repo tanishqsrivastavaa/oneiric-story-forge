@@ -8,56 +8,62 @@ All colors MUST be HSL for proper theming
 
 @layer base {
   :root {
-    /* Dreamy background gradients */
-    --background: 249 30% 7%;
-    --foreground: 276 100% 95%;
+    /* Nature-inspired green palette - Minimal & Aesthetic */
+    --background: 0 0% 0%;
+    /* Black (#000000) */
+    --foreground: 151 67% 96%;
+    /* Light green text */
 
-    /* Glass-like cards */
-    --card: 252 25% 12%;
-    --card-foreground: 276 100% 95%;
+    /* Card styling with forest tones */
+    --card: 152 100% 4%;
+    /* Black Forest (#053B06) */
+    --card-foreground: 151 67% 96%;
 
     /* Popover styling */
-    --popover: 252 25% 12%;
-    --popover-foreground: 276 100% 95%;
+    --popover: 152 100% 4%;
+    --popover-foreground: 151 67% 96%;
 
-    /* Magical primary colors */
-    --primary: 276 100% 70%;
-    --primary-foreground: 249 30% 7%;
-    --primary-glow: 276 100% 85%;
+    /* Primary: Jungle Green */
+    --primary: 161 82% 36%;
+    /* Jungle Green (#0DAB76) */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 161 82% 50%;
 
-    /* Soft secondary */
-    --secondary: 252 25% 15%;
-    --secondary-foreground: 276 100% 85%;
+    /* Secondary: Medium Jungle */
+    --secondary: 145 44% 21%;
+    /* Dark Emerald (#0B5D1E) */
+    --secondary-foreground: 151 67% 96%;
 
-    /* Muted elements */
-    --muted: 252 20% 20%;
-    --muted-foreground: 276 30% 70%;
+    /* Muted: Dark shades */
+    --muted: 152 100% 6%;
+    --muted-foreground: 145 30% 60%;
 
-    /* Accent colors */
-    --accent: 195 100% 70%;
-    --accent-foreground: 249 30% 7%;
+    /* Accent: Medium Jungle */
+    --accent: 130 45% 34%;
+    /* Medium Jungle (#139A43) */
+    --accent-foreground: 0 0% 100%;
 
     /* Error states */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Borders and inputs */
-    --border: 252 25% 25%;
-    --input: 252 25% 18%;
-    --ring: 276 100% 70%;
+    /* Borders and inputs - subtle green tones */
+    --border: 145 44% 21% / 0.3;
+    --input: 152 100% 4%;
+    --ring: 161 82% 36%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Magical gradients */
-    --gradient-magical: linear-gradient(135deg, hsl(276 100% 70%), hsl(195 100% 70%));
-    --gradient-dream: linear-gradient(180deg, hsl(249 30% 7%), hsl(252 25% 12%));
-    --gradient-card: linear-gradient(145deg, hsl(252 25% 12% / 0.8), hsl(276 50% 15% / 0.6));
-    
-    /* Shadows and effects */
-    --shadow-magical: 0 8px 32px hsl(276 100% 70% / 0.3);
-    --shadow-dream: 0 4px 16px hsl(249 30% 7% / 0.5);
-    --shadow-glow: 0 0 24px hsl(276 100% 70% / 0.4);
-    
+    /* Nature-inspired gradients */
+    --gradient-magical: linear-gradient(135deg, hsl(161 82% 36%), hsl(130 45% 34%));
+    --gradient-dream: linear-gradient(180deg, hsl(0 0% 0%), hsl(152 100% 4%));
+    --gradient-card: linear-gradient(145deg, hsl(152 100% 4% / 0.9), hsl(145 44% 21% / 0.4));
+
+    /* Soft, minimal shadows */
+    --shadow-magical: 0 8px 24px hsl(161 82% 36% / 0.2);
+    --shadow-dream: 0 4px 12px hsl(0 0% 0% / 0.4);
+    --shadow-glow: 0 0 20px hsl(161 82% 36% / 0.3);
+
     /* Animation timing */
     --transition-magical: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-smooth: all 0.3s ease-out;
@@ -80,23 +86,24 @@ All colors MUST be HSL for proper theming
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode uses same green palette for consistency */
+    --background: 0 0% 0%;
+    --foreground: 151 67% 96%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 152 100% 4%;
+    --card-foreground: 151 67% 96%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 152 100% 4%;
+    --popover-foreground: 151 67% 96%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 161 82% 36%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 145 44% 21%;
+    --secondary-foreground: 151 67% 96%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 152 100% 6%;
+    --muted-foreground: 145 30% 60%;
 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;

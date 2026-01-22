@@ -75,42 +75,37 @@ export function DreamGenerator() {
   return (
     <div className="space-y-6">
       {/* Collective Dream Generation */}
-      <Card className="bg-gradient-card backdrop-blur-sm border-border/50 shadow-dream">
+      <Card className="bg-card/80 backdrop-blur-sm border-border">
         <CardHeader>
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
-            <CardTitle className="text-xl">Collective Dream Narrative</CardTitle>
+            <CardTitle className="text-xl text-foreground">Dream Narrative</CardTitle>
           </div>
-          <CardDescription>
-            Generate a unified story from your dream experiences
+          <CardDescription className="text-muted-foreground">
+            Generate a story from your dreams
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button
             onClick={generateCollectiveDream}
             disabled={isGeneratingNarrative}
-            variant="mystical"
-            className="w-full"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             {isGeneratingNarrative ? (
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Weaving Dream Narrative...
+                Generating...
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Wand2 className="h-4 w-4" />
-                Generate Collective Dream
+                Generate Narrative
               </div>
             )}
           </Button>
 
           {collectiveDream && (
-            <div className="p-4 rounded-lg bg-secondary/30 border border-border/30">
-              <h4 className="font-semibold text-primary mb-2 flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                Your Collective Dream
-              </h4>
+            <div className="p-4 rounded-lg bg-secondary/20 border border-border">
               <p className="text-sm text-foreground/90 leading-relaxed italic">
                 "{collectiveDream}"
               </p>
@@ -120,38 +115,37 @@ export function DreamGenerator() {
       </Card>
 
       {/* Dream Image Generation */}
-      <Card className="bg-gradient-card backdrop-blur-sm border-border/50 shadow-dream">
+      <Card className="bg-card/80 backdrop-blur-sm border-border">
         <CardHeader>
           <div className="flex items-center gap-2">
             <Image className="h-5 w-5 text-accent" />
-            <CardTitle className="text-xl">Dream Visualization</CardTitle>
+            <CardTitle className="text-xl text-foreground">Dream Image</CardTitle>
           </div>
-          <CardDescription>
-            Transform your dreams into ethereal imagery
+          <CardDescription className="text-muted-foreground">
+            Visualize your dreams
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Button
             onClick={generateDreamImage}
             disabled={isGeneratingImage}
-            variant="ethereal"
-            className="w-full"
+            className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
           >
             {isGeneratingImage ? (
               <div className="flex items-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Manifesting Dream Vision...
+                Generating...
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Image className="h-4 w-4" />
-                Generate Dream Image
+                Generate Image
               </div>
             )}
           </Button>
 
           {dreamImage && (
-            <div className="rounded-lg overflow-hidden shadow-glow">
+            <div className="rounded-lg overflow-hidden border border-border">
               <img
                 src={dreamImage}
                 alt="Generated dream visualization"

@@ -61,14 +61,14 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
   };
 
   return (
-    <Card className="bg-gradient-card backdrop-blur-sm border-border/50 shadow-dream">
+    <Card className="bg-card/80 backdrop-blur-sm border-border">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5 text-accent" />
-          <CardTitle className="text-xl">Dream Journal</CardTitle>
+          <CardTitle className="text-xl text-foreground">Dream History</CardTitle>
         </div>
-        <CardDescription>
-          Your personal collection of nocturnal adventures
+        <CardDescription className="text-muted-foreground">
+          Your captured dreams
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -91,7 +91,7 @@ export function DreamHistory({ refreshTrigger }: DreamHistoryProps) {
               {dreams.map((dream) => (
                 <div
                   key={dream.id}
-                  className="p-4 rounded-lg bg-secondary/30 border border-border/30 hover:bg-secondary/50 transition-smooth"
+                  className="p-4 rounded-lg bg-secondary/20 border border-border hover:bg-secondary/30 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">

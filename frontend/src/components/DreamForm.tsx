@@ -83,26 +83,26 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
   };
 
   return (
-    <Card className="bg-gradient-card backdrop-blur-sm border-border/50 shadow-dream">
-      <CardHeader className="text-center">
-        <div className="flex justify-center mb-2">
-          <Moon className="h-8 w-8 text-primary animate-pulse" />
-        </div>
-        <CardTitle className="text-2xl font-bold bg-gradient-magical bg-clip-text text-transparent">
+    <Card className="bg-card/80 backdrop-blur-sm border-border">
+      <CardHeader>
+        <CardTitle className="text-xl text-foreground flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 text-primary">
+            <path d="m9.653 16.915-.005-.003-.019-.01a20.759 20.759 0 0 1-1.162-.682 22.045 22.045 0 0 1-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 0 1 8-2.828A4.5 4.5 0 0 1 18 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 0 1-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 0 1-.69.001l-.002-.001Z" />
+          </svg>
           Capture Your Dream
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          Share your nocturnal journey with the dream collective
+          Share your nocturnal journey
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Textarea
-              placeholder="Describe your dream... What did you see, feel, or experience in the realm of sleep?"
+              placeholder="Describe your dream..."
               value={dreamText}
               onChange={(e) => setDreamText(e.target.value)}
-              className="min-h-32 bg-input/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 resize-none transition-smooth"
+              className="min-h-32 bg-input border-border focus:border-primary transition-colors resize-none"
               disabled={isSubmitting}
             />
             <div className="text-xs text-muted-foreground text-right">
@@ -112,21 +112,10 @@ export function DreamForm({ onDreamSubmitted }: DreamFormProps) {
 
           <Button
             type="submit"
-            variant="magical"
-            className="w-full"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             disabled={isSubmitting || !dreamText.trim()}
           >
-            {isSubmitting ? (
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 animate-spin" />
-                Capturing Dream...
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4" />
-                Submit Dream
-              </div>
-            )}
+            {isSubmitting ? "Saving..." : "Submit Dream"}
           </Button>
         </form>
       </CardContent>

@@ -86,24 +86,26 @@ export function Signup() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
-            <Card className="w-full max-w-md bg-gradient-card backdrop-blur-sm border-border/50 shadow-dream">
-                <CardHeader className="text-center">
-                    <div className="flex justify-center mb-2">
-                        <Moon className="h-8 w-8 text-primary animate-pulse" />
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
+            <Card className="w-full max-w-md bg-card/80 backdrop-blur-sm border-border shadow-dream">
+                <CardHeader className="text-center space-y-4">
+                    <div className="flex justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-12 w-12 text-primary">
+                            <path d="m9.653 16.915-.005-.003-.019-.01a20.759 20.759 0 0 1-1.162-.682 22.045 22.045 0 0 1-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 0 1 8-2.828A4.5 4.5 0 0 1 18 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 0 1-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 0 1-.69.001l-.002-.001Z" />
+                        </svg>
                     </div>
-                    <CardTitle className="text-2xl font-bold bg-gradient-magical bg-clip-text text-transparent">
-                        Join the Dream Realm
+                    <CardTitle className="text-3xl font-bold text-foreground">
+                        Create Account
                     </CardTitle>
                     <CardDescription className="text-muted-foreground">
-                        Create your account and start your dream journey
+                        Start capturing your dreams
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
                             <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-                                <Mail className="h-4 w-4" />
+                                <Mail className="h-4 w-4 text-primary" />
                                 Email
                             </label>
                             <Input
@@ -112,13 +114,13 @@ export function Signup() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 disabled={isLoading}
-                                className="bg-input/50 border-border/50 focus:border-primary/50 focus:ring-primary/20"
+                                className="bg-input border-border focus:border-primary transition-colors"
                             />
                         </div>
 
                         <div className="space-y-2">
                             <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-                                <Lock className="h-4 w-4" />
+                                <Lock className="h-4 w-4 text-primary" />
                                 Password
                             </label>
                             <Input
@@ -127,13 +129,13 @@ export function Signup() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 disabled={isLoading}
-                                className="bg-input/50 border-border/50 focus:border-primary/50 focus:ring-primary/20"
+                                className="bg-input border-border focus:border-primary transition-colors"
                             />
                         </div>
 
                         <div className="space-y-2">
                             <label className="flex items-center gap-2 text-sm font-medium text-foreground">
-                                <Lock className="h-4 w-4" />
+                                <Lock className="h-4 w-4 text-primary" />
                                 Confirm Password
                             </label>
                             <Input
@@ -142,34 +144,23 @@ export function Signup() {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 disabled={isLoading}
-                                className="bg-input/50 border-border/50 focus:border-primary/50 focus:ring-primary/20"
+                                className="bg-input border-border focus:border-primary transition-colors"
                             />
                         </div>
 
                         <Button
                             type="submit"
-                            variant="magical"
-                            className="w-full"
+                            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                             disabled={isLoading || !email.trim() || !password.trim() || !confirmPassword.trim()}
                         >
-                            {isLoading ? (
-                                <div className="flex items-center gap-2">
-                                    <Sparkles className="h-4 w-4 animate-spin" />
-                                    Creating Account...
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    <Sparkles className="h-4 w-4" />
-                                    Create Account
-                                </div>
-                            )}
+                            {isLoading ? "Creating account..." : "Create Account"}
                         </Button>
                     </form>
 
                     <div className="mt-6 text-center text-sm text-muted-foreground">
                         Already have an account?{" "}
-                        <Link to="/login" className="text-primary hover:underline font-medium">
-                            Log in here
+                        <Link to="/login" className="text-primary hover:text-primary/80 font-medium transition-colors">
+                            Sign in
                         </Link>
                     </div>
                 </CardContent>

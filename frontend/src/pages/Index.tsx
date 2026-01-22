@@ -23,35 +23,21 @@ const Index = () => {
   };
 
   return (
-    <div
-      className="min-h-screen bg-gradient-dream relative overflow-hidden"
-      style={{
-        backgroundImage: `url(${dreamBackground})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundBlendMode: 'overlay',
-      }}
-    >
-      {/* Overlay for better content readability */}
-      <div className="absolute inset-0 bg-background/60 backdrop-blur-[2px]" />
-
-      {/* Floating particles effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-2 h-2 bg-primary/30 rounded-full animate-pulse" />
-        <div className="absolute top-40 right-32 w-1 h-1 bg-accent/40 rounded-full animate-pulse delay-1000" />
-        <div className="absolute bottom-40 left-32 w-3 h-3 bg-primary/20 rounded-full animate-pulse delay-2000" />
-        <div className="absolute bottom-60 right-20 w-1 h-1 bg-accent/30 rounded-full animate-pulse delay-3000" />
-      </div>
-
-      <div className="relative z-10 container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8">
         {/* Header with Logout Button */}
-        <header className="text-center mb-12">
-          <div className="flex justify-between items-start mb-8">
-            <div className="flex-1" />
-            <div className="text-sm text-muted-foreground">
-              Welcome, {email}
+        <header className="mb-12">
+          <div className="flex justify-between items-center mb-8">
+            <div className="flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-8 w-8 text-primary">
+                <path d="m9.653 16.915-.005-.003-.019-.01a20.759 20.759 0 0 1-1.162-.682 22.045 22.045 0 0 1-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 0 1 8-2.828A4.5 4.5 0 0 1 18 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 0 1-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 0 1-.69.001l-.002-.001Z" />
+              </svg>
+              <h1 className="text-3xl font-bold text-foreground">
+                Somnia
+              </h1>
             </div>
-            <div className="flex justify-end">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground">{email}</span>
               <Button
                 onClick={handleLogout}
                 variant="outline"
@@ -63,15 +49,8 @@ const Index = () => {
               </Button>
             </div>
           </div>
-          <div className="flex justify-center items-center gap-3 mb-4">
-            <Moon className="h-10 w-10 text-primary animate-pulse" />
-            <h1 className="text-5xl font-bold bg-gradient-magical bg-clip-text text-transparent">
-              Dream Journal
-            </h1>
-            <Stars className="h-8 w-8 text-accent animate-pulse delay-500" />
-          </div>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Capture, explore, and visualize your nocturnal journeys in this mystical realm of dreams
+          <p className="text-muted-foreground max-w-2xl">
+            Capture and explore your dreams
           </p>
         </header>
 
@@ -88,13 +67,6 @@ const Index = () => {
             <DreamGenerator />
           </div>
         </div>
-
-        {/* Footer */}
-        <footer className="text-center mt-16 text-muted-foreground/60">
-          <p className="text-sm">
-            "Dreams are the touchstones of our characters." - Henry David Thoreau
-          </p>
-        </footer>
       </div>
     </div>
   );
