@@ -33,6 +33,7 @@ def get_cors_origins() -> List[str]:
     default_origins = [
         "http://localhost:8080",
         "http://localhost:5173",
+        "https://somnia-92h9.onrender.com"
     ]
     
     if env_origins:
