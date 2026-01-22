@@ -64,6 +64,12 @@ engine = create_engine(NEON_DB_URL)
 SessionLocal = sessionmaker(bind=engine)
 
 # Create auth tables on startup
+
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "Somnia Backend is running"}
+
+
 @app.on_event("startup")
 async def startup_event():
     """Create all tables on startup."""
