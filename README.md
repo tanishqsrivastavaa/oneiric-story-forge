@@ -1,14 +1,19 @@
-# 🌙 Oneiric Story Forge - Dream Journal
+<div align="center">
 
-A mystical web application for capturing, exploring, and visualizing your nocturnal journeys with AI-powered dream narratives and image generation.
+# 🌙 Oneiric Story Forge
 
-![Dream Journal](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
+**A dream journal that reads your dreams back to you — in words and pictures.**
+
+Capture dreams, explore your history, and let AI weave poetic narratives and generate artwork from your nocturnal journeys.
+
+![React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20TS-61dafb?logo=react&logoColor=white)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)
+![Groq](https://img.shields.io/badge/Narratives-Llama%203.3%20%2F%20Groq-f55036)
 ![License](https://img.shields.io/badge/License-MIT-blue)
-![Python](https://img.shields.io/badge/Python-3.11+-blue)
-![React](https://img.shields.io/badge/React-18-blue)
+
+</div>
 
 ---
-
 ## ✨ Features
 
 ### 🎭 Core Features
